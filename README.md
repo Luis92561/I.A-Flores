@@ -8,10 +8,6 @@ sobre un backbone preentrenado en ImageNet y devolviendo el *top-5* con probabil
 - Código modular en `src/` + notebook único + demo interactivo con Gradio.
 - Splits **oficiales** del dataset (no se inventan particiones), métricas top-1 / top-5 / macro-F1.
 
-> Las interfaces exactas, la propiedad de cada archivo, las firmas congeladas y las reglas
-> de entorno están en **[CONTRATOS.md](CONTRATOS.md)** (documento autoritativo). El plan,
-> las decisiones D1–D6 y los riesgos están en **[PLAN_TRABAJO.md](PLAN_TRABAJO.md)**.
-> Este README no los duplica: describe *cómo usarlo*.
 
 ---
 
@@ -59,7 +55,7 @@ Trátalo como referencia para juzgar si tu corrida salió razonable, no como pro
 
 > **Regla de Colab (importante).** En Colab `torch` y `torchvision` ya vienen con CUDA.
 > El notebook instala **solo** lo que falta (`gradio`, `scikit-learn`, `matplotlib`) y nunca
-> reinstala torch por pip. Ver **[CONTRATOS.md](CONTRATOS.md)** §1 para el detalle.
+> reinstala torch por pip.
 
 ---
 
@@ -131,8 +127,6 @@ IA flores/
 └─ PLAN_TRABAJO.md            # plan, decisiones y riesgos
 ```
 
-La correspondencia archivo ↔ subagente dueño y las firmas congeladas de cada módulo están en
-**[CONTRATOS.md](CONTRATOS.md)** §2 y §3.
 
 ---
 
