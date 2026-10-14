@@ -1,0 +1,17 @@
+# Entorno local de verificacion (venv, CPU).
+# IMPORTANTE para Colab: NO ejecutar `pip install -r requirements.txt` tal cual,
+# porque Colab ya trae torch/torchvision con CUDA y pip los reemplazaria por
+# ruedas CPU (se pierde la GPU). En Colab instala solo: gradio scikit-learn matplotlib
+
+torch>=2.4
+torchvision>=0.19
+numpy>=1.26
+Pillow>=10.2
+scipy>=1.11          # requerido por torchvision.datasets.Flowers102 (scipy.io.loadmat)
+matplotlib>=3.8
+scikit-learn>=1.4
+pandas>=2.1
+tqdm>=4.66
+gradio>=6.0          # src/app.py usa la API de Gradio 6 (en 6.0 desaparecio el evento submit)
+pytest>=8.0
+nbformat>=5.9        # validacion del notebook y ejecucion con nbclient (ver docs/VERIFICACION.md)

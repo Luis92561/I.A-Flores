@@ -1,0 +1,21 @@
+# Entorno
+.venv/
+.piptmp/
+.pytmp/
+.pipcache/
+.wheels/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Datos y resultados (se regeneran)
+data/
+resultados/
+
+# Sistema
+.DS_Store
+Thumbs.db
+resultados_flores.zip
+pytest-cache-files-*/
+IA_flores_colab.zip
