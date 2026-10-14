@@ -39,7 +39,10 @@ Trátalo como referencia para juzgar si tu corrida salió razonable, no como pro
 ## 2. Inicio rápido en Google Colab (recomendado)
 
 1. **Abre el notebook.** Sube `notebooks/flores_colab.ipynb` a [Google Colab](https://colab.research.google.com/)
-   (o ábrelo desde Drive) y conéctate.
+   (o ábrelo desde Drive) y conéctate. **No hace falta subir el proyecto**: el notebook clona
+   automáticamente este repositorio (`https://github.com/Luis92561/I.A-Flores`) porque
+   `MODO_CODIGO = "auto"` se resuelve a `"clone"` cuando no encuentra el proyecto local.
+   Si prefieres no clonar, puedes subir `IA_flores_colab.zip` y cambiar `MODO_CODIGO` a `"zip"`.
 2. **Activa la GPU T4.** Menú *Entorno de ejecución → Cambiar tipo de entorno de ejecución →
    Acelerador de hardware: GPU T4*. La primera celda del notebook verifica que `torch.cuda`
    esté disponible; si no lo está, no sigas.
