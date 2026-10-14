@@ -24,7 +24,7 @@ construida con Gradio.
 
 **Documentos de referencia del proyecto.** El plan de trabajo y las decisiones de diseño están
 en [PLAN_TRABAJO.md](PLAN_TRABAJO.md); las interfaces congeladas y la propiedad de cada archivo,
-en [CONTRATOS.md](CONTRATOS.md); las instrucciones de uso y ejecución, en [README.md](README.md).
+en el contrato interno; las instrucciones de uso y ejecución, en [README.md](README.md).
 Este informe no duplica esos documentos: documenta el problema, el método, el protocolo
 experimental y los resultados.
 
@@ -397,7 +397,7 @@ Todos los valores de la tabla siguiente provienen literalmente de `src/config.py
 
 **Nota sobre la selección de hiperparámetros.** Estos valores son decisiones de diseño del
 proyecto, documentadas como tales en [PLAN_TRABAJO.md](PLAN_TRABAJO.md) y
-[CONTRATOS.md](CONTRATOS.md); no provienen de una búsqueda sistemática de hiperparámetros ni de
+el contrato interno; no provienen de una búsqueda sistemática de hiperparámetros ni de
 una optimización automática. Se eligieron siguiendo las prácticas habituales para *transfer
 learning* con pocos datos (tasa baja para el *backbone*, AdamW con decaimiento de pesos,
 calentamiento y decaimiento coseno, suavizado de etiquetas) y con la restricción de que la corrida

@@ -1,6 +1,6 @@
 """Modelo de clasificacion de flores (Flowers-102) con backbones de torchvision.
 
-CONTRATO (seccion 3 de CONTRATOS.md, propietario SA-02):
+CONTRATO (seccion 3 del contrato interno, propietario SA-02):
 
     class FlowerClassifier(nn.Module):      # atributos OBLIGATORIOS: .backbone y .head
         def forward(self, x) -> Tensor      # (B,3,H,W) -> (B, num_classes) logits

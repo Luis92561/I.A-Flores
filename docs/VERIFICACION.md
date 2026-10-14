@@ -17,7 +17,7 @@
 ### 0.1 Entorno de verificacion (peculiaridades de ESTA maquina, no del proyecto)
 
 Todo se ejecuto desde la raiz del proyecto con el venv del proyecto y las variables de entorno
-de `CONTRATOS.md` §1:
+de `contrato interno` §1:
 
 ```powershell
 $env:TMP = (Resolve-Path .pytmp).Path; $env:TEMP = $env:TMP
@@ -76,7 +76,7 @@ Hashes tomados **al cerrar la auditoria** (revision final):
 | `tests/test_eval_predict.py` | `CEE3BEDF8093` | 22613 |
 | `tests/test_smoke.py` | `420CAFDE521C` | 4889 |
 | `notebooks/flores_colab.ipynb` | `4B9E0D8C75EA` | 56447 |
-| `CONTRATOS.md` | `ADD6776FA45F` | 15895 (parcheado por mi: §1 y regla 5 de §0) |
+| contrato interno (retirado del repositorio) | `ADD6776FA45F` | 15895 (parcheado por mi: §1 y regla 5 de §0) |
 | `README.md` | `3CDC58164B7E` | 15522 (parcheado por mi) |
 | `INFORME.md` | `CF043365F164` | 52853 |
 | `PLAN_TRABAJO.md` | `B4704BCB4252` | 11421 |
@@ -93,7 +93,7 @@ exacta sobre la que se ejecuto el `pytest` final: 78 passed.)*
 
 ### 0.3 Que se hizo
 
-1. Lectura completa de `CONTRATOS.md`, `PLAN_TRABAJO.md`, `README.md`, `INFORME.md`,
+1. Lectura completa de `contrato interno`, `PLAN_TRABAJO.md`, `README.md`, `INFORME.md`,
    `empaquetar_colab.py`, `notebooks/flores_colab.ipynb`, los 8 modulos de `src/` y los 5 (luego
    6) archivos de `tests/`, ademas de `pytest.ini`, `.gitignore` y `assets/cat_to_name.json`.
 2. Suite completa 3 veces (con 73, 77 y 78 casos, segun iban anadiendose tests) y, la ultima,
@@ -122,7 +122,7 @@ exacta sobre la que se ejecuto el `pytest` final: 78 passed.)*
 | 2 | El pipeline corre de punta a punta | **CONFIRMADO.** Corrida propia resnet50+semilla 7 (train -> evaluate -> predict -> build_app) y corrida de 2 epocas con el dataset completo; ademas, evaluacion de 6149 imagenes: `top1=37,8 %`, `top5=67,4 %` |
 | 3 | No hay fuga de datos: splits disjuntos y val/test sin augmentacion | **PARCIALMENTE REFUTADO.** Splits disjuntos por indice y por ruta (0 intersecciones), val/test deterministas (sin augmentacion): confirmado. Pero hay **4 pares de imagenes byte-identicas (MD5) y 2 cruzan splits** (train<->test y val<->test): refuta el "sin duplicados globales" |
 | 4 | El notebook se ejecuta de punta a punta en modo debug | **CONFIRMADO** (13/13 celdas de codigo, 102,1 s, sin errores, hash del notebook igual antes y despues). No verificable como notebook real de Jupyter/Colab en este sandbox |
-| 5 | No hay rutas absolutas de Windows en lo entregado | **REFUTADO** en un punto: `CONTRATOS.md` linea 34 (que si viaja en el ZIP) mas la propia norma que citaba el patron. **Ambos parcheados**: hoy 0 coincidencias en todo lo entregado, dentro y fuera del ZIP. `src/`, `tests/`, `notebooks/`, el resto de `.md`, los `.py` de la raiz y `requirements.txt`: limpios |
+| 5 | No hay rutas absolutas de Windows en lo entregado | **REFUTADO** en un punto: `contrato interno` linea 34 (que viajaba en el ZIP) mas la propia norma que citaba el patron. **Ambos parcheados**: hoy 0 coincidencias en todo lo entregado, dentro y fuera del ZIP. `src/`, `tests/`, `notebooks/`, el resto de `.md`, los `.py` de la raiz y `requirements.txt`: limpios |
 | 6 | No hay `.cuda()` duro, todo corre en CPU y la rama CUDA/AMP esta bien escrita | **CONFIRMADO** en lo verificable en CPU; la rama CUDA/AMP solo es auditable por lectura (no hay GPU utilizable) |
 | 7 | `requirements.txt` correcto y suficiente; Colab no reinstala torch; `scipy` necesario | **PARCIALMENTE REFUTADO** cuando empece (faltaba `nbformat` y `gradio>=4.44` no reflejaba la API de Gradio 6); **ambos puntos fueron corregidos por el orquestador durante la auditoria** (`gradio>=6.0`, `nbformat>=5.9`). Colab no reinstala torch y `scipy` esta: correcto |
 | 8 | Los numeros del INFORME/README son honestos y coinciden con `src/config.py` | **CONFIRMADO en lo esencial**: ninguna metrica inventada, cifras de literatura rotuladas y verificadas contra la fuente, los 21 hiperparametros coinciden literalmente. Incoherencias: "ultimos bloques" en `README.md` (parcheado), una descarga de `cat_to_name.json` que da 404, y **ningun artefacto registra si los pesos preentrenados se cargaron de verdad** (hallazgo propio, seccion 2.8.e) |
@@ -178,7 +178,7 @@ los tests seguian creciendo.
 
 | Ubicacion | Debilidad | Severidad |
 |---|---|---|
-| `tests/` (ningun archivo) | **`src/app.py` no tiene ni un solo test**: buscar `app`, `build_app` o `gradio` en `tests/` no devuelve ninguna referencia. El criterio de aceptacion de `CONTRATOS.md` §4 para `app.py` no esta cubierto por la suite (lo he verificado yo a mano: seccion 2.9). `tests/test_smoke.py`, en cambio, **ya existe** (creado durante la auditoria) y si ejercita `data -> model -> train -> evaluate -> predict` | media |
+| `tests/` (ningun archivo) | **`src/app.py` no tiene ni un solo test**: buscar `app`, `build_app` o `gradio` en `tests/` no devuelve ninguna referencia. El criterio de aceptacion de `contrato interno` §4 para `app.py` no esta cubierto por la suite (lo he verificado yo a mano: seccion 2.9). `tests/test_smoke.py`, en cambio, **ya existe** (creado durante la auditoria) y si ejercita `data -> model -> train -> evaluate -> predict` | media |
 | `tests/test_data.py:509` | `_build_or_skip` captura `except Exception` y hace `pytest.skip(...)`: **cualquier fallo real** de `build_dataloaders` (firma rota, dataset corrupto, error de torchvision) se convierte en "skipped" en lugar de "failed". En mi corrida los dos tests lentos se ejecutaron y pasaron, pero el mecanismo oculta fallos | media |
 | `tests/test_data.py:38-43,493` | `pytest.importorskip("torch"/"torchvision"/"scipy")`: si falta una dependencia, los tests se saltan en silencio y la suite "pasa" sin probar nada | baja |
 | `tests/test_eval_predict.py:108-191`, `tests/test_smoke.py:99-107` | Las metricas se comprueban **estructuralmente** (claves, rangos, `top5 >= top1`, numero de filas del CSV), pero **nada** verifica que `top1` coincida con el recuento de `correcto=True` del CSV ni que la matriz de confusion cuadre con las predicciones: una aritmetica de metricas equivocada pasaria los tests. Yo lo he cruzado a mano en dos corridas (seccion 2.2) y coincide al ultimo digito | baja |
@@ -218,7 +218,7 @@ Entrenamiento Flowers-102
 [  1/2] backbone entrenando | train loss 4.6196 acc 0.0098 | val loss 4.5352 acc 0.0490 top5 0.1740 | lr 3.000e-04 *mejor
 [  2/2] backbone entrenando | train loss 4.4840 acc 0.1201 | val loss 4.4712 acc 0.1324 top5 0.3162 | lr 1.500e-04 *mejor
 Listo en 436.8 s (7.3 min) | epocas ejecutadas: 2/2
-Mejor val_acc: 0.1324 (epoca 2)  |  Parametros: 23,717,030
+Mejor val_acc: 0.1324 (epoca 2) |  Parametros: 23,717,030
 [SA-10] avisos durante el entrenamiento: ninguno
 
 [evaluate] split=test imagenes=408 top1=0.1348 top5=0.3137 macro_f1=0.1042 (73.46s)
@@ -311,18 +311,18 @@ claves setid.mat: ['trnid', 'tstid', 'valid']
   valid :  1020 imagenes | ids 17..8187
   tstid :  6149 imagenes | ids 1..8189
   imagenes totales en imagelabels.mat: 8189 | clases: 102
-  |trnid & valid| = 0        |trnid & tstid| = 0        |valid & tstid| = 0
-  |union| = 8189 == 8189 : True
+ |trnid & valid| = 0      |trnid & tstid| = 0      |valid & tstid| = 0
+ |union| = 8189 == 8189 : True
   ids duplicados dentro de cada split: {'trnid': 0, 'valid': 0, 'tstid': 0}
 train: ficheros==setid:True etiquetas==imagelabels-1:True
 val  : ficheros==setid:True etiquetas==imagelabels-1:True
 test : ficheros==setid:True etiquetas==imagelabels-1:True
-  |train & val|  (rutas) = 0        |train & test| (rutas) = 0        |val & test|   (rutas) = 0
+ |train & val|  (rutas) = 0      |train & test| (rutas) = 0      |val & test|   (rutas) = 0
 == 4. MD5 de las 8189 imagenes ==
   ficheros hasheados: 8189 | hashes duplicados (global): 4
 == 5. Subconjuntos de debug ==
   tamanos: 408 408 408 | nombres: 102 | clases cubiertas en debug: 102
-  |train & val| = 0 | |train & test| = 0 | |val & test| = 0
+ |train & val| = 0 | |train & test| = 0 | |val & test| = 0
 == 6. Transforms ==
   transforms train=True : identicos en dos aplicaciones -> False
   transforms train=False: identicos en dos aplicaciones -> True
@@ -381,7 +381,7 @@ torch: 2.14.1+cpu | torchvision: 0.29.1+cpu | CUDA disponible: False
 ### CELDA 4 (Drive) OK
 Fuera de Colab (o sin google.colab): se omite el montaje de Drive.
 ### CELDA 6 (codigo del proyecto) OK
-MODO_CODIGO='auto': proyecto detectado en ...\IA flores    |    src/config.py : OK
+MODO_CODIGO='auto': proyecto detectado en ...\IA flores  |    src/config.py : OK
 ### CELDA 8 (imports) OK
 ### CELDA 10 (config) OK
 Modo: DEBUG (subconjunto) | Dispositivo: cpu | Epocas: 2 | batch: 32 | img: 224 | num_workers: 0
@@ -448,10 +448,10 @@ orden, en el mismo espacio de nombres, y se detiene en el primer error. **No** c
 
 Busqueda de rutas absolutas de Windows (patrones del tipo letra-de-unidad + dos puntos + barra,
 y menciones de la carpeta de usuarios) en **todo** el arbol entregable: una sola coincidencia
-real (la linea 18 de `CONTRATOS.md` era la propia norma, no una ruta):
+real (la linea 18 de `contrato interno` era la propia norma, no una ruta):
 
 ```
-CONTRATOS.md
+el contrato interno
 Line 34: | Python local de pruebas | C:\...\Python312\python.exe (3.12) |      <- ruta del autor, redactada aqui
 ```
 
@@ -498,13 +498,13 @@ Rama CUDA/AMP (revision de codigo, no ejecutable aqui):
 * `scipy>=1.11` esta presente y es necesaria (`torchvision.datasets.Flowers102` usa
   `scipy.io.loadmat`); `src/data.py` convierte el `ImportError` en un mensaje util.
 * Todas las dependencias usadas estan declaradas y las versiones instaladas coinciden con las
-  que `CONTRATOS.md` §1 declara: torch 2.14.1+cpu, torchvision 0.29.1+cpu, numpy 2.5.2,
+  que `contrato interno` §1 declara: torch 2.14.1+cpu, torchvision 0.29.1+cpu, numpy 2.5.2,
   scipy 1.18.1, pandas 3.0.6, scikit-learn 1.9.1, matplotlib 3.11.2, gradio 6.30.0,
   pytest 9.1.1, nbformat 5.11.1, tqdm 4.70.1, Pillow 12.3.0 (verificado modulo a modulo).
 
 **REFUTADO en la revision inicial, ya corregido durante la auditoria:**
 
-* Faltaba `nbformat`, que `CONTRATOS.md` §1 lista como instalado y §5 afirma incluido en
+* Faltaba `nbformat`, que `contrato interno` §1 lista como instalado y §5 afirma incluido en
   `requirements.txt`. **Ya esta** (`nbformat>=5.9`).
 * `gradio>=4.44` permitia instalar versiones contra las que no esta escrito `src/app.py`, que
   documenta haberse escrito contra Gradio 6.30.0 y usa `gr.Blocks(fill_width=True)`,
@@ -557,9 +557,9 @@ es correcto. "~15-25 min en T4" esta rotulado como estimacion, no como medicion.
 |---|---|---|---|---|
 | d1 | "despues **se descongelan los ultimos bloques**" frente a un codigo que descongela el backbone **entero** (`set_backbone_trainable(model, not congelado)` pone `requires_grad=True` en todos los parametros). `INFORME.md` §4.2/§6.1 lo describe bien ("se descongela el *backbone*") | `README.md` §5.2 y `PLAN_TRABAJO.md` §4 | media | **parcheado** en `README.md` (seccion 3); `PLAN_TRABAJO.md` queda como documento de plan |
 | d2 | Afirmacion de que las particiones oficiales separan las imagenes "por planta fotografiada" | `INFORME.md` §5.3 | media | **corregido por otro subagente** durante la auditoria (seccion 2.3) |
-| d3 | Se describe la descarga de `cat_to_name.json` "de la pagina de Oxford": esa URL **devuelve HTTP 404** (verificado en vivo; la pagina oficial solo publica imagenes, segmentaciones, matrices de distancia, `imagelabels.mat`, `setid.mat` y README). El paso de descarga (prioridad 4 de `get_class_names`) es codigo muerto; no afecta al resultado porque la prioridad 1 (`Flowers102.classes`, atributo de clase) y la 3 (`assets/cat_to_name.json`) siempre funcionan | `INFORME.md` §5.5, `CONTRATOS.md` §3, `src/data.py:45` | baja | abierto |
+| d3 | Se describe la descarga de `cat_to_name.json` "de la pagina de Oxford": esa URL **devuelve HTTP 404** (verificado en vivo; la pagina oficial solo publica imagenes, segmentaciones, matrices de distancia, `imagelabels.mat`, `setid.mat` y README). El paso de descarga (prioridad 4 de `get_class_names`) es codigo muerto; no afecta al resultado porque la prioridad 1 (`Flowers102.classes`, atributo de clase) y la 3 (`assets/cat_to_name.json`) siempre funcionan | `INFORME.md` §5.5, `contrato interno` §3, `src/data.py:45` | baja | abierto |
 | d4 | Ningun artefacto registra si los pesos preentrenados se cargaron realmente (ver e) | `src/train.py`, `src/model.py::save_checkpoint` | media | abierto (parche propuesto) |
-| d5 | `tests/test_smoke.py` anunciado en `README.md` §4 y `CONTRATOS.md` §2 y no existente | documentacion | media | **resuelto**: el archivo fue creado durante la auditoria y ahora esta y pasa |
+| d5 | `tests/test_smoke.py` anunciado en `README.md` §4 y `contrato interno` §2 y no existente | documentacion | media | **resuelto**: el archivo fue creado durante la auditoria y ahora esta y pasa |
 | d6 | Documentacion del `Estado del proyecto` desactualizada | `README.md` §9 | baja | **ya estaba actualizada** cuando la revise a fondo |
 
 **e) Verificacion de los pesos preentrenados de cada checkpoint (hallazgo propio).**
@@ -591,7 +591,7 @@ Comando: `.pytmp/sa10_cli.py` (subprocess real sobre `python -m <modulo>`).
 ```
 ### 1. python -m <modulo> --help
   src.train      rc=0 | usage: python -m src.train [-h] [--epochs EPOCHS] [--batch-size BATCH_SIZE]
-                          (incluye --num-workers)   <-- extension autorizada por CONTRATOS.md §3.b
+                          (incluye --num-workers)   <-- extension autorizada por el contrato interno §3.b
   src.evaluate   rc=0 | usage: python -m src.evaluate [-h] [--checkpoint CHECKPOINT]
                           (incluye --num-workers)
   src.predict    rc=0 | usage: python -m src.predict [-h] --image IMAGE [--checkpoint CHECKPOINT]
@@ -632,7 +632,7 @@ entradas corruptas). Contenido:
 
 ```
 25 archivos, 0 entradas corruptas (testzip -> None)
-  .gitignore  CONTRATOS.md  INFORME.md  PLAN_TRABAJO.md  README.md  pytest.ini  requirements.txt
+  .gitignore  el contrato interno  INFORME.md  PLAN_TRABAJO.md  README.md  pytest.ini  requirements.txt
   assets/cat_to_name.json      docs/VERIFICACION.md      notebooks/flores_colab.ipynb
   src/__init__.py src/app.py src/config.py src/data.py src/evaluate.py src/model.py
   src/predict.py src/train.py src/utils.py
@@ -645,7 +645,7 @@ Comprobaciones:
 * Nada peligroso: sin `data/`, sin `resultados/`, sin `__pycache__`, sin `.pyc`, sin `.pt`, sin
   `.venv`, sin `.pytmp`/`.piptmp`, sin `resultados_flores.zip`.
 * Sin rutas absolutas de Windows dentro de ningun archivo del ZIP (comprobado leyendo cada
-  entrada; tras parchear `CONTRATOS.md`, 0 coincidencias).
+  entrada; tras parchear `contrato interno`, 0 coincidencias).
 * `src/config.py` esta en la raiz del ZIP, que es lo que busca el notebook (`raiz_con_config`).
 * El notebook del ZIP es **el mismo** que el del disco (mismo SHA-256), y `docs/` y
   `tests/test_smoke.py` estan incluidos.
@@ -668,8 +668,8 @@ archivos prohibidos (`notebooks/flores_colab.ipynb`, `src/train.py`, `src/evalua
 | # | Archivo | Antes | Despues | Motivo |
 |---|---|---|---|---|
 | 1 | `README.md` §5.2 | "Las primeras épocas entrenan con el backbone congelado; después **se descongelan los últimos bloques** usando *learning rate* diferencial (más bajo para el backbone que para la cabeza)." | "Las primeras épocas entrenan con el backbone congelado; después **se descongela el backbone completo** (el código no selecciona "últimos bloques": `set_backbone_trainable(model, True)` en `src/train.py`) usando *learning rate* diferencial (más bajo para el backbone que para la cabeza)." | Coherencia documento <-> codigo (hallazgo d1) |
-| 2 | `CONTRATOS.md` §1 | `\| Python local de pruebas \| C:\...\Python312\python.exe (3.12) \|` (ruta del autor, redactada aqui) | `\| Python local de pruebas \| 3.12 (el del sistema; las pruebas del proyecto se ejecutan con el venv `.venv`) \|` | Era la unica ruta absoluta de Windows y viajaba en el ZIP (punto 5) |
-| 3 | `CONTRATOS.md` §0 regla 5 | La regla prohibia las rutas absolutas **citando el patron literal** (unidad + carpeta de usuarios + puntos suspensivos). | "**Sin rutas absolutas de Windows** en el código (nada de rutas que empiecen por la letra de unidad del disco local del autor)." | La propia norma citaba el patron, de modo que un grep seguia encontrando la cadena en un archivo entregable (falso positivo que se elimina asi) |
+| 2 | `contrato interno` §1 | `\| Python local de pruebas \| C:\...\Python312\python.exe (3.12) \|` (ruta del autor, redactada aqui) | `\| Python local de pruebas \| 3.12 (el del sistema; las pruebas del proyecto se ejecutan con el venv `.venv`) \|` | Era la unica ruta absoluta de Windows y viajaba en el ZIP (punto 5) |
+| 3 | `contrato interno` §0 regla 5 | La regla prohibia las rutas absolutas **citando el patron literal** (unidad + carpeta de usuarios + puntos suspensivos). | "**Sin rutas absolutas de Windows** en el código (nada de rutas que empiecen por la letra de unidad del disco local del autor)." | La propia norma citaba el patron, de modo que un grep seguia encontrando la cadena en un archivo entregable (falso positivo que se elimina asi) |
 
 **Corregidos por otros subagentes durante la auditoria** (los detecte y verifique, pero no los
 parchee yo):
@@ -695,7 +695,7 @@ parchee yo):
   devuelve 404; corregirla, sustituirla por un origen que exista o documentar que el paso es
   best-effort no funcional.
 * `INFORME.md` §5.5 (SA-08): misma matizacion sobre la descarga de `cat_to_name.json`.
-* `README.md` §4 / `CONTRATOS.md` §2: ahora que `tests/test_smoke.py` existe, estan al dia.
+* `README.md` §4 / `contrato interno` §2: ahora que `tests/test_smoke.py` existe, estan al dia.
 
 ---
 
@@ -715,7 +715,7 @@ produzca metricas falsas.
    en el checkpoint, imprimirlo en una linea destacada; opcionalmente abortar si
    `pretrained=True` no se pudo cumplir).
 2. **`src/app.py` no tiene ningun test** (la demo es el unico entregable sin cobertura
-   automatizada; su criterio de aceptacion esta en `CONTRATOS.md` §4).
+   automatizada; su criterio de aceptacion esta en `contrato interno` §4).
    *Recomendacion*: `tests/test_app.py` con `build_app` (con y sin checkpoint), `predecir(None)`,
    `predecir(imagen, ckpt_ausente)` y `tabla_markdown` (yo lo he verificado a mano y funciona).
 3. **`tests/test_data.py::_build_or_skip` convierte cualquier excepcion en `skip`.**
@@ -798,4 +798,4 @@ Para que nadie compare cifras de revisiones distintas:
 | A mitad de la auditoria | `.gitignore` += `resultados_flores.zip`; `_sa09_build.py` eliminado | Hallazgos 9 y 10 evitados |
 | A mitad de la auditoria | `tests/test_smoke.py` creado; notebook actualizado a `4B9E0D8C75EA` | P1 gana un test solido; volvi a ejecutar el notebook con la version nueva |
 | Al ejecutar el notebook (1er intento) | Se bloqueo en `plt.show()` (mi emulador, no el proyecto) | 2ª ejecucion con `MPLBACKEND=Agg`, completada en 102,1 s |
-| Al cerrar la auditoria | Yo parchee `README.md` §5.2 y `CONTRATOS.md` §0/§1 (seccion 3) | Rutas absolutas: 0 coincidencias; fine-tuning descrito como es |
+| Al cerrar la auditoria | Yo parchee `README.md` §5.2 y `contrato interno` §0/§1 (seccion 3) | Rutas absolutas: 0 coincidencias; fine-tuning descrito como es |

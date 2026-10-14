@@ -26,7 +26,6 @@ DESTINO = RAIZ / "IA_flores_colab.zip"
 # ---------------------------------------------------------------- lista blanca
 ARCHIVOS = [
     ".gitignore",
-    "CONTRATOS.md",
     "INFORME.md",
     "PLAN_TRABAJO.md",
     "README.md",

@@ -1,6 +1,6 @@
 """Evaluacion de un checkpoint sobre un split de Oxford Flowers-102.
 
-CONTRATO (seccion 3 de CONTRATOS.md, propietario SA-06):
+CONTRATO (seccion 3 del contrato interno, propietario SA-06):
 
     evaluate(checkpoint_path: str | Path, cfg: Config | None = None,
              split: str = "test") -> dict
@@ -63,7 +63,7 @@ __all__ = [
 
 #: Splits oficiales aceptados (los mismos de ``src.data``).
 SPLITS_VALIDOS: tuple[str, str, str] = ("train", "val", "test")
-#: Mensaje unico para "todavia no hay modelo entrenado" (texto de CONTRATOS.md seccion 3.b).
+#: Mensaje unico para "todavia no hay modelo entrenado" (texto del contrato interno seccion 3.b).
 MENSAJE_ENTRENA = "entrena primero: `python -m src.train`"
 #: Maximo de confusiones guardadas/graficadas (contrato: 20).
 MAX_CONFUSIONES: int = 20

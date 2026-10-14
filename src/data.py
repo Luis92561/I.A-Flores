@@ -13,7 +13,7 @@ Notas de diseno:
     el helper :func:`_flowers102_class` convierte ese ImportError en un mensaje util.
   - Nada de rutas absolutas ni de ``.cuda()``: este modulo no necesita device,
     ``pin_memory`` se activa solo si ``torch.cuda.is_available()``.
-  - Pitfall documentado en CONTRATOS.md §3: las etiquetas originales de Flowers-102
+  - Pitfall documentado en el contrato interno §3: las etiquetas originales de Flowers-102
     son 1-based (1..102) y torchvision resta 1; las claves de ``cat_to_name.json``
     son ``"1".."102"``, por eso se mapea ``class_names[i] = cat[str(i + 1)]``.
 """
@@ -263,7 +263,7 @@ def _names_from_mapping(mapping: Any, num_classes: int) -> list[str] | None:
 
     Se aceptan las dos convenciones vistas en la practica:
       - Oxford ``cat_to_name.json``: claves ``"1".."102"`` (1-based), por eso se
-        prueba ``mapping[str(i + 1)]`` (pitfall documentado en CONTRATOS.md §3).
+        prueba ``mapping[str(i + 1)]`` (pitfall documentado en el contrato interno §3).
       - ``assets/cat_to_name.json`` del repo: claves ``"0".."101"`` (0-based).
     """
     if not isinstance(mapping, dict) or not mapping:

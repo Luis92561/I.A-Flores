@@ -4,7 +4,7 @@ Ejercita la cadena REAL de modulos -- `data` (transforms) -> `model` -> `train` 
 `evaluate` -> `predict` -- sobre un dataset de imagenes sinteticas en disco, con un
 modelo diminuto de 4 clases. No descarga nada y tarda unos segundos en CPU.
 
-Es el test que anuncian `README.md` (seccion 4) y `CONTRATOS.md` (seccion 2) como
+Es el test que anuncian `README.md` (seccion 4) y `contrato interno` (seccion 2) como
 "pipeline end-to-end con dataset sintetico".
 
 Ejecutar:

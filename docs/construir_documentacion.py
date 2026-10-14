@@ -372,7 +372,7 @@ def anexo_estructura(doc: Document) -> None:
 
 ARBOL = """IA flores/
   README.md                 guía rápida para quien llega nuevo
-  CONTRATOS.md              interfaces acordadas antes de programar
+  el contrato interno              interfaces acordadas antes de programar
   PLAN_TRABAJO.md           plan inicial y riesgos previstos
   INFORME.md                informe académico (con huecos para tus resultados)
   requirements.txt          librerías necesarias

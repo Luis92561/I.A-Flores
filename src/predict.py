@@ -1,6 +1,6 @@
 """Inferencia (demo y CLI) sobre un checkpoint entrenado de Flowers-102.
 
-CONTRATO (seccion 3 de CONTRATOS.md, propietario SA-06):
+CONTRATO (seccion 3 del contrato interno, propietario SA-06):
 
     predict_image(image_path, checkpoint_path, topk=5,
                   min_conf=0.25, device="auto") -> list[tuple[str, float]]
@@ -46,7 +46,7 @@ except ImportError:  # pragma: no cover - depende de como se importe el modulo
 __all__ = ["predict_image", "predict_batch", "limpiar_cache", "main", "NO_RECONOCIDA"]
 
 #: Etiqueta que se devuelve cuando la confianza no llega a ``min_conf``.
-#: NOTA: es el unico texto acentuado del proyecto (CONTRATOS.md seccion 5 pide el
+#: NOTA: es el unico texto acentuado del proyecto (el contrato interno seccion 5 pide el
 #: codigo sin acentos, pero la tarea de SA-06 fija esta cadena literal). Si se
 #: cambia aqui hay que cambiarla tambien en ``tests/test_eval_predict.py`` y en
 #: ``src/app.py`` (SA-07), que debe importar esta constante en vez de copiarla.

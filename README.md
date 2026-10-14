@@ -123,7 +123,7 @@ IA flores/
 ├─ requirements.txt           # dependencias del entorno local de verificación
 ├─ README.md                  # este archivo
 ├─ INFORME.md                 # informe académico con resultados y figuras
-├─ CONTRATOS.md               # interfaces y propiedad de archivos (autoritativo)
+├─ el contrato interno               # interfaces y propiedad de archivos (autoritativo)
 └─ PLAN_TRABAJO.md            # plan, decisiones y riesgos
 ```
 

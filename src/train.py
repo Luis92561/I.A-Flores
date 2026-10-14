@@ -1,6 +1,6 @@
 """Entrenamiento de Flowers-102 (propietario: SA-05).
 
-CONTRATO (CONTRATOS.md seccion 3, `src/train.py`):
+CONTRATO (el contrato interno seccion 3, `src/train.py`):
 
     train(cfg: Config) -> dict          # entrena y devuelve el historial
     # CLI: python -m src.train --epochs 5 --debug --device cpu
@@ -583,7 +583,7 @@ def build_argparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m src.train",
         description=(
-            "Entrena el clasificador de flores (Flowers-102) segun CONTRATOS.md seccion 3.b. "
+            "Entrena el clasificador de flores (Flowers-102) segun el contrato interno seccion 3.b. "
             "Sin argumentos usa los valores por defecto de src/config.py."
         ),
         epilog=(
