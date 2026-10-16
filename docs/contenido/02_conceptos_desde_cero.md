@@ -463,7 +463,7 @@ para juzgar si una corrida propia salió razonable. Lo que sí está medido aqu�
 ya aprende algo real y muy por encima del azar incluso a medio entrenar, después de solo
 4 épocas.
 
-> Además de las métricas, el proyecto se comprueba con **78 pruebas automáticas** que verifican
+> Además de las métricas, el proyecto se comprueba con **108 pruebas automáticas** que verifican
 > que cada pieza hace lo que promete (por ejemplo, que el top-5 nunca puede ser peor que el
 > top-1, o que el umbral de confianza responde "no reconocida" cuando corresponde). Esas pruebas
 > no miden la calidad de las predicciones: miden que la maquinaria está bien armada.

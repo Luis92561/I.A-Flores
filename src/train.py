@@ -367,11 +367,16 @@ def plot_history(history: dict, path: str | Path) -> Path:
 # --------------------------------------------------------------------------- #
 # Entrenamiento
 # --------------------------------------------------------------------------- #
-def train(cfg: Config) -> dict:
+def train(cfg: Config, *, loaders: tuple | None = None) -> dict:
     """Entrena el clasificador y devuelve el historial (JSON serializable).
 
     Args:
         cfg: hiperparametros y rutas (ver `src/config.py`).
+        loaders: opcional. Tupla ``(train_dl, val_dl, test_dl, class_names)`` ya
+            construida. Sirve para entrenar con un catalogo propio de fotos (ver
+            `src/custom.py`) sin pasar por el dataset de Oxford. Cuando se inyectan,
+            el reintento por fallo de los workers NO los reconstruye: el error se
+            propaga, porque los datos son responsabilidad de quien los construyo.
 
     Returns:
         Diccionario con las claves de :data:`HISTORY_KEYS`. Las listas tienen una
@@ -386,7 +391,7 @@ def train(cfg: Config) -> dict:
     cfg.ensure_dirs()
 
     print("=" * 72)
-    print("Entrenamiento Flowers-102")
+    print("Entrenamiento con catalogo propio" if loaders is not None else "Entrenamiento Flowers-102")
     print(f"  dispositivo : {describe_device(device)}")
     print(f"  backbone    : {cfg.backbone} (pretrained={cfg.pretrained}, dropout={cfg.dropout})")
     print(
@@ -401,7 +406,10 @@ def train(cfg: Config) -> dict:
     print("=" * 72)
 
     # ---------------------------------------------------------------- datos
-    train_dl, val_dl, _test_dl, class_names = build_dataloaders(cfg)
+    if loaders is None:
+        train_dl, val_dl, _test_dl, class_names = build_dataloaders(cfg)
+    else:
+        train_dl, val_dl, _test_dl, class_names = loaders
     num_workers_efectivo = int(cfg.num_workers)
     print(
         f"  lotes: train={len(train_dl)} val={len(val_dl)} | "
@@ -467,7 +475,9 @@ def train(cfg: Config) -> dict:
         try:
             return _etapa(etapa, epoch)
         except Exception as exc:  # noqa: BLE001 - se re-lanza si no es de workers
-            if num_workers_efectivo <= 0 or not _es_error_de_workers(exc):
+            # Con loaders inyectados no se reconstruye nada: los datos no son
+            # nuestros y `build_dataloaders` cargaria el dataset de Oxford.
+            if num_workers_efectivo <= 0 or not _es_error_de_workers(exc) or loaders is not None:
                 raise
             mensaje = (
                 f"La etapa '{etapa}' fallo con num_workers={num_workers_efectivo} "

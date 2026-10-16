@@ -95,7 +95,55 @@ Notas:
 
 ---
 
-## 4. Estructura del proyecto
+## 4. Entrenar con tus propias flores (extra opcional)
+
+Sección **opcional**: sirve para que el sistema reconozca **tus** especies (las que no están
+entre las 102 de Oxford) sin tocar el modelo del proyecto. Entrena un **modelo aparte** con tus
+fotos etiquetadas y lo deja en `resultados/custom/`.
+
+**Formato de las fotos.** Una carpeta por especie; **el nombre de la carpeta es la etiqueta**.
+Se admiten `jpg`, `jpeg`, `png` y `webp`, y las fotos de móvil se corrigen solas (giro EXIF y
+conversión a RGB).
+
+```
+mis_flores/
+├─ mi_especie_a/
+│  ├─ foto_01.jpg
+│  └─ foto_02.jpg
+└─ mi_especie_b/
+   └─ foto_01.jpg
+```
+
+**Cuántas fotos hacen falta.** Entre **20 y 50 fotos por especie** para un resultado decente;
+con **menos de 10** el resultado es pobre. Cuantas más especies distintas metas, más fotos
+conviene poner en cada una.
+
+```bash
+# 1. Revisar la carpeta antes de entrenar (avisa de las clases con pocas fotos)
+python -m src.custom --fotos mis_flores --revisar
+
+# 2. Entrenar el modelo propio (15 épocas): escribe resultados/custom/best.pt
+python -m src.custom --fotos mis_flores --epochs 15
+
+# 3. Usarlo en la demo, junto al modelo de las 102 especies
+python -m src.app --custom-checkpoint resultados/custom/best.pt
+```
+
+Notas:
+
+- El modelo propio queda en **`resultados/custom/best.pt`** (con su `class_names` y su informe
+  en la misma carpeta). **No sobrescribe** `resultados/best.pt`.
+- Es un **modelo aparte**: no modifica ni sustituye al de las 102 especies. Puedes borrar
+  `resultados/custom/` y `mis_flores/` sin romper nada del resto del proyecto.
+- En la demo, el modelo de las 102 especies responde primero y el modelo propio entra **cuando
+  aquel no está seguro**. Sin `--custom-checkpoint`, la demo se comporta igual que antes.
+- `mis_flores/` (tus fotos) y `resultados/` están en `.gitignore`: no se suben al repositorio.
+- El notebook de Colab incluye este flujo como **paso 11 (extra)**, con una celda que genera
+  fotos sintéticas de ejemplo si todavía no tienes las tuyas.
+
+---
+
+## 5. Estructura del proyecto
 
 ```
 IA flores/
@@ -107,30 +155,41 @@ IA flores/
 │  ├─ data.py                 # transforms + DataLoaders de los splits oficiales
 │  ├─ model.py                # backbone preentrenado + cabeza nueva, checkpoints
 │  ├─ train.py                # loop de entrenamiento: AMP, scheduler, early stopping, historial
+│  ├─ custom.py               # extra: entrenar con tus propias flores (catálogo aparte)
 │  ├─ evaluate.py             # top-1/top-5/macro-F1, matriz de confusión, curvas
 │  ├─ predict.py              # inferencia sobre una imagen nueva (CLI + API)
 │  └─ app.py                  # interfaz Gradio (upload + webcam, salida top-k)
 ├─ tests/
+│  ├─ conftest.py             # arreglo de los directorios temporales de las pruebas
 │  ├─ test_data.py            # carga de splits y forma de los lotes
 │  ├─ test_model.py           # forward y ida/vuelta de checkpoints
 │  ├─ test_train.py           # 2 épocas en modo debug
 │  ├─ test_eval_predict.py    # métricas y predicción de una imagen
+│  ├─ test_custom.py          # entrenamiento con flores propias
+│  ├─ test_app.py             # demo y uso del catálogo propio
 │  └─ test_smoke.py           # pipeline end-to-end con dataset sintético
 ├─ docs/
-│  └─ VERIFICACION.md         # auditoría adversarial del notebook y del código
+│  ├─ VERIFICACION.md         # auditoría adversarial del notebook y del código
+│  └─ contenido/              # las secciones de la documentación en Markdown
+├─ assets/
+│  └─ cat_to_name.json        # los 102 nombres de especie (respaldo sin internet)
+├─ mis_flores/                # tus fotos, una carpeta por especie (no se versiona)
 ├─ data/                      # descargado automáticamente (no se versiona)
 ├─ resultados/                # best.pt, metrics.json, figuras, predicciones (no se versiona)
+│  └─ custom/                 # modelo entrenado con tus flores (no se versiona)
 ├─ requirements.txt           # dependencias del entorno local de verificación
+├─ pytest.ini                 # configuración de las pruebas
+├─ empaquetar_colab.py        # genera IA_flores_colab.zip
+├─ Documentacion_IA_Flores.docx / .pdf   # documentación completa del proyecto
 ├─ README.md                  # este archivo
 ├─ INFORME.md                 # informe académico con resultados y figuras
-├─ el contrato interno               # interfaces y propiedad de archivos (autoritativo)
 └─ PLAN_TRABAJO.md            # plan, decisiones y riesgos
 ```
 
 
 ---
 
-## 5. Cómo funciona (resumen)
+## 6. Cómo funciona (resumen)
 
 1. **Datos.** Se usa `torchvision.datasets.Flowers102` con sus splits oficiales
    (**1020 train / 1020 val / 6149 test**, 102 clases). Entrenamiento con
@@ -158,7 +217,7 @@ por defecto de ese archivo, no una copia independiente.
 
 ---
 
-## 6. Limitaciones honestas
+## 7. Limitaciones honestas
 
 - **Solo 102 especies.** El modelo no conoce ninguna flor fuera del catálogo de Flowers-102.
   Gracias al umbral de confianza puede decir "no reconocida", pero eso es un rechazo, no un
@@ -178,7 +237,7 @@ por defecto de ese archivo, no una copia independiente.
 
 ---
 
-## 7. Solución de problemas
+## 8. Solución de problemas
 
 | Síntoma | Causa probable | Solución |
 |---|---|---|
@@ -192,7 +251,7 @@ por defecto de ese archivo, no una copia independiente.
 
 ---
 
-## 8. Créditos y licencia
+## 9. Créditos y licencia
 
 **Dataset.** Este proyecto usa **Oxford Flowers-102**. Cita obligatoria si reutilizas los datos
 o los resultados:
@@ -213,7 +272,7 @@ propio código si piensas publicarlo.
 
 ---
 
-## 9. Estado del proyecto
+## 10. Estado del proyecto
 
 **Estado: código completo y verificado; falta únicamente la corrida final en Colab.** Todos los
 módulos de `src/` están implementados, probados con sus tests y ejercitados de punta a punta
@@ -230,7 +289,7 @@ ejecución del notebook; hasta entonces esas celdas siguen con el marcador
 | `src/evaluate.py` | Listo | Escribe `metrics.json`, `figuras/confusion_matrix.png`, `figuras/top_confusions.png` y `predicciones/<split>_predicciones.csv` |
 | `src/predict.py` | Listo | `predict_image` / `predict_batch` con caché de modelo y umbral `min_conf` |
 | `src/app.py` | Listo | Demo Gradio (`gr.Blocks`) con subida de imagen, webcam y portapapeles; no crashea si falta el checkpoint |
-| `notebooks/flores_colab.ipynb` | Listo | Version final: 26 celdas, 13 de código, ejecutada de principio a fin en modo debug sin errores |
+| `notebooks/flores_colab.ipynb` | Listo | Version final: 33 celdas, 18 de código (incluye el paso 11 extra, opcional, de flores propias), ejecutada de principio a fin en modo debug sin errores |
 | `tests/` | Listo | `test_data.py`, `test_model.py`, `test_train.py`, `test_eval_predict.py` |
 | `empaquetar_colab.py` | Listo | Genera `IA_flores_colab.zip` con la lista blanca de archivos (sin `data/` ni `resultados/`) |
 | Corrida completa (25 épocas en GPU T4) | **Pendiente de ti** | Es el paso que rellena la sección 1 y la sección 8 de `INFORME.md` |

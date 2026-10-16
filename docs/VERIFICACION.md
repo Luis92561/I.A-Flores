@@ -1,5 +1,11 @@
 # Verificacion adversarial del proyecto "IA flores" (SA-10)
 
+> **Nota posterior a esta auditoria.** El cuaderno se amplio despues con un apartado extra
+> (Paso 11) para entrenar con flores propias, y el proyecto incorporo `src/custom.py`. El
+> recuento de celdas y los hashes que aparecen mas abajo corresponden a la version auditada en su
+> momento y no se reescriben aqui: esta nota solo avisa de que hay cambios posteriores a la
+> auditoria.
+
 > Documento propiedad de **SA-10 (verificador adversarial)**. Su funcion no es escribir
 > funcionalidad, sino **intentar refutar** que el proyecto funciona y dejar constancia escrita
 > de lo que aguanta y de lo que no.

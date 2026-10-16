@@ -62,7 +62,8 @@ Después vienen los **anexos**, que contienen el código completo tal cual está
 | Entrenamiento completo | 25 épocas, lotes de 32 imágenes de 224x224, 15-25 minutos en una GPU T4 |
 | Entrenamiento rápido de prueba | 2 épocas sobre 408 imágenes, unos minutos |
 | Resultado medido con 4 épocas | 37,8 % de acierto exacto y 67,4 % entre las 5 primeras propuestas, sobre las 6149 fotos oficiales de prueba |
-| Cómo se sabe que funciona | 78 pruebas automáticas, una auditoría independiente y varias ejecuciones completas |
+| Cómo se sabe que funciona | 108 pruebas automáticas, una auditoría independiente y varias ejecuciones completas |
+| Extra opcional | Entrenar el sistema con tus propias flores (un catálogo aparte del de las 102 especies) |
 | Qué se entrega | Un archivo comprimido con el cuaderno de Colab, el código, las pruebas y los informes |
 
 ## Una advertencia útil

@@ -32,9 +32,15 @@ El cuaderno se divide en **celdas** (casillas). Hay dos tipos:
 La diferencia práctica es está: el texto te cuenta **qué** se va a hacer y **por qué**; la celda
 de código lo **hace**. El cuaderno de este proyecto es `notebooks/flores_colab.ipynb`. La
 extensión `.ipynb` significa "cuaderno de IPython" y es el formato estándar de Jupyter y de Colab.
-El cuaderno tiene 26 celdas, de las cuales 13 son de código y 13 son de texto. Se ejecutan **en
+El cuaderno tiene 33 celdas, de las cuales 18 son de código y 15 son de texto. Se ejecutan **en
 orden**, de arriba abajo, porque cada celda aprovecha lo que hizo la anterior: si te saltas una,
 la siguiente puede no encontrar lo que necesita.
+
+A los diez pasos originales se les añadió después un **Paso 11 (extra)**, optativo, para entrenar
+con **tus propias flores** (especies que no están entre las 102 de Oxford). Son las cuatro celdas
+de código y las dos de texto que van al final: si no las ejecutas, el proyecto de las 102
+especies funciona exactamente igual. El capítulo siguiente, el del extra, explica ese apartado en
+detalle.
 
 Una aclaración útil: **no hay nada que memorizar de las celdas de código**. Están escritas y
 probadas; tu trabajo es pulsar "ejecutar" y, si algo se queja, leer el mensaje. Todo el código
@@ -42,8 +48,9 @@ lleva comentarios en español explicando cada bloque.
 
 ## Recorrido del cuaderno, paso a paso
 
-Las celdas de código están numeradas como pasos del 1 al 10. Esto es lo que hace cada uno, en
-lenguaje llano.
+Las celdas de código de esta primera parte están numeradas como pasos del 1 al 10. Esto es lo que
+hace cada uno, en lenguaje llano. (El **Paso 11 (extra)**, que va después y es optativo, se
+explica aparte: es el que entrena con tus propias flores.)
 
 ### Pasó 1 - Comprobar la GPU e instalar solo lo que falte
 
@@ -234,7 +241,7 @@ parte del programa hace lo que promete. Se ejecuta solo, sin que nadie mire, y r
 o "falló". La idea es sencilla: si cambias algo y rompes otra cosa sin darte cuenta, la prueba lo
 detecta en segundos, en lugar de que el error aparezca tres semanas después delante de un tribunal.
 
-Las pruebas de este proyecto viven en la carpeta `tests/`. Son **78 pruebas** repartidas en seis
+Las pruebas de este proyecto viven en la carpeta `tests/`. Son **108 pruebas** repartidas en siete
 archivos:
 
 | Archivo | Que comprueba, en una frase |
@@ -243,6 +250,8 @@ archivos:
 | `tests/test_model.py` | Que el modelo se construye bien, que recibe una imagen y devuelve 102 respuestas, que se puede guardar en un archivo y volver a cargarlo dando exactamente el mismo resultado, y que se puede congelar y descongelar su parte preentrenada. |
 | `tests/test_train.py` | Que el entrenamiento termina, guarda sus archivos y sigue las reglas pactadas: la forma de la velocidad de aprendizaje, que se congela y se descongela la parte preentrenada en el momento previsto, que la parada temprana corta a tiempo y que dos corridas con la misma semilla dan el mismo resultado. |
 | `tests/test_eval_predict.py` | Que la evaluación escribe las métricas, las figuras y el listado de predicciones, que falla con un mensaje claro si falta el modelo entrenado, y que la predicción devuelve resultados ordenados, recorta bien el número de propuestas y respeta el umbral de confianza. |
+| `tests/test_custom.py` | Que el extra de las flores propias funciona: que la revisión de la carpeta informa en vez de fallar, que el reparto de fotos entre entrenamiento y validación no tiene fuga, que el modelo propio se entrena y se guarda con sus clases, y que se evalúa sin lógica nueva. |
+| `tests/test_app.py` | Que la demo se construye y responde, que avisa en lugar de romperse cuando falta el modelo, y que el catálogo propio se usa como respaldo solo cuando el de las 102 especies no está seguro. |
 | `tests/test_smoke.py` | Que el recorrido completo funciona encadenado (cargar datos, modelo, entrenar, evaluar, predecir) sobre un conjunto de imágenes inventadas, sin internet y en unos segundos. |
 | `tests/conftest.py` | No es una prueba, es el preparador común: crea las carpetas temporales que usan las demás pruebas, con un ajuste especial para está máquina concreta. |
 
@@ -257,11 +266,11 @@ Se ejecutan con el comando siguiente, desde la carpeta del proyecto:
 .venv\Scripts\python.exe -m pytest tests -q
 ```
 
-La respuesta termina con una línea parecida a `78 passed`, que significa "78 pruebas superadas".
+La respuesta termina con una línea parecida a `108 passed`, que significa "108 pruebas superadas".
 Las pruebas que necesitan el catálogo real de 330 MB (las más lentas) solo se ejecutan si se avisa
 antes con una variable de entorno; si no, se saltan para no hacer esperar. Su propio texto lo dice:
 si falta un programa auxiliar, algunas pruebas se saltan en lugar de fallar, de modo que un
-`78 passed` sin haber preparado el entorno no es exactamente lo mismo que un `78 passed` completo.
+`108 passed` sin haber preparado el entorno no es exactamente lo mismo que un `108 passed` completo.
 Por eso el registró de verificación detalla con que ajustes se obtuvo cada recuento.
 
 ## El empaquetado: empaquetar_colab.py
@@ -305,8 +314,8 @@ de dependencias) y que ninguna entrada está corrupta. Si falta algo, lo dice y 
 aviso de error en lugar de dejarte un paquete incompleto.
 
 ```text
-ZIP creado: IA_flores_colab.zip  (160 KB)
-Archivos incluidos: 28
+ZIP creado: IA_flores_colab.zip  (302 KB)
+Archivos incluidos: 42
 
 Comprobacion de la estructura que espera el notebook:
   OK   src/config.py
@@ -320,10 +329,11 @@ RESULTADO: estructura correcta
 ```
 
 Un dato curioso que merece mención: el proyecto entero, sin las fotos ni los resultados, cabe en
-unos 160 KB, es decir, menos de una décima parte de una sola foto sin comprimir de muchos móviles.
-Un informe de verificación anterior registró 25 archivos y 142 KB; la cifra creció después, porque
-el propio documento que estas leyendo viaja dentro del paquete. Los archivos de datos son los que
-pesan, no el programa.
+unos 302 KB, es decir, bastante menos que una sola foto sin comprimir de muchos móviles. La cifra
+ha ido creciendo con el proyecto: un informe de verificación anterior registró 25 archivos y
+142 KB, y hoy son 42 archivos y 302 KB, porque después se añadieron el apartado de flores propias
+(`src/custom.py` con sus pruebas), la documentación completa y el cuaderno ampliado. Los archivos
+de datos son los que pesan de verdad, no el programa.
 
 ## El archivo requirements.txt
 
@@ -355,10 +365,11 @@ usa.
 
 ## Resumen del capítulo
 
-- El **cuaderno** `notebooks/flores_colab.ipynb` es el guion: 26 celdas, 13 de ellas de código,
+- El **cuaderno** `notebooks/flores_colab.ipynb` es el guion: 33 celdas, 18 de ellas de código,
   que recorren el proyecto en 10 pasos, empiezan en modo debug para verificar rápido y terminan
-  descargando los resultados.
-- Las **78 pruebas automáticas** de `tests/` vigilan que nada se rompa en silencio, sin necesidad de
+  descargando los resultados, más un apartado extra optativo (el Paso 11) para entrenar con flores
+  propias.
+- Las **108 pruebas automáticas** de `tests/` vigilan que nada se rompa en silencio, sin necesidad de
   revisar el programa a mano.
 - El **empaquetado** `empaquetar_colab.py` construye un ZIP con lista blanca que deja fuera las
   330 MB de fotos y los resultados, y que se autocomprueba después de crearse.
